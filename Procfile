@@ -1,1 +1,1 @@
-web: gunicorn constantcontact-export:app
+web: gunicorn app
