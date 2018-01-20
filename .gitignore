@@ -1,2 +1,5 @@
 __pycache__/*
 svdx/*
+app/__pycache__/*
+lib/__pycache__/*
+models/__pycache__/*

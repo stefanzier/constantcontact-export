@@ -41,6 +41,7 @@ class ConstantContact(object):
         added_limit = False
         for variable_name, variable_sub in kwargs.get('variable', {}).items():
             url = re.sub(variable_name, variable_sub, url)
+            print("URL: " + url)
             if "limit" in kwargs.get('variable') and not added_limit:
                 url += "?limit=500"
                 added_limit = True
