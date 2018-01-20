@@ -1,6 +1,7 @@
 import sys
 import csv
 import os
+import requests
 from flask import make_response
 from app.lib.constantcontact import ConstantContact
 
@@ -68,21 +69,28 @@ def WriteCSVFile(eventId):
         progress(current_user_index, total_users, status=progress_status)
 
         # Make API request for user's company name
-        reg_user_params = {"eventId": eventId, "registrantId": uid}
-        reg_user_req = cc.eventspot.events.eventId.registrants.registrantId(
-            variable=reg_user_params
-        )
+        try:
+            reg_user_params = {"eventId": eventId, "registrantId": uid}
+            reg_user_req = cc.eventspot.events.eventId.registrants.registrantId(
+                variable=reg_user_params
+            )
 
-        # Store company name in respective user
-        company_name = reg_user_req["sections"][1]["fields"][2]["value"]
-        users[uid]["company"] = company_name
+            # Store company name in respective user
+            company_name = reg_user_req["sections"][1]["fields"][2]["value"]
+            users[uid]["company"] = company_name
 
-        # Store the registration date in respective user
-        registration_date = reg_user_req["registration_date"]
-        users[uid]["registration_date"] = registration_date
+            # Store the registration date in respective user
+            registration_date = reg_user_req["registration_date"]
+            users[uid]["registration_date"] = registration_date
 
-        # increment our current index for our progress bar
-        current_user_index += 1
+            # increment our current index for our progress bar
+            current_user_index += 1
+        except requests.exceptions.HTTPError as err:
+            print("Could not process User ID:", uid)
+            print(err)
+            print("Skipping", uid)
+            print("-----------------------------")
+            continue
 
     # Our WriteDictToCSV function requires a list of dictionary values
     dict_data = []
