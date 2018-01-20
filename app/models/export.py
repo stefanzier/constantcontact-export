@@ -4,6 +4,7 @@ import os
 import requests
 from flask import make_response
 from app.lib.constantcontact import ConstantContact
+from app import celery
 
 
 def progress(count, total, status=''):
@@ -108,6 +109,7 @@ def WriteCSVFile(eventId):
     WriteDictToCSV(csv_file, csv_columns, dict_data)
 
 
+@celery.task
 def download_csv(eventId):
     WriteCSVFile(eventId=eventId)
     currentPath = os.getcwd()

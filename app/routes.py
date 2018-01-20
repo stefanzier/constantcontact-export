@@ -9,7 +9,7 @@ from app.models.export import download_csv
 def index():
     form = RetrieveCSVForm()
     if form.validate_on_submit():
-        return download_csv(form.eventId.data)
+        return download_csv.delay(form.eventId.data)
 
     return render_template('index.html', form=form)
 
