@@ -1,1 +1,1 @@
-web: gunicorn constantcontact-export.wsgi
+web: gunicorn constantcontact-export:app
