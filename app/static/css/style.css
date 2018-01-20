@@ -1,0 +1,15 @@
+body {
+  font-family: 'Lato', sans-serif;
+  background-color: #F2F2F2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+h1 {
+  color: 'red' !important;
+}
+
+.container {
+  width: 100%;
+}

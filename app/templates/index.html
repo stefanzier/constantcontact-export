@@ -1,13 +1,285 @@
 <html>
     <head>
         <title>ConstantContact CSV Export</title>
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style media="screen">
+          body {
+            font-family: 'Lato', sans-serif;
+            background-color: #F2F2F2;
+          }
+          .container {
+            display: block;
+            text-align: center;
+            width: 100%;
+            z-index: 1;
+          }
+
+          .inner-container {
+            width: 100%;
+            z-index: 9998;
+            position: absolute;
+            top: 25%;
+            left: 0;
+          }
+
+          input[type="text"] {
+            height: 50px;
+            width: 60%;
+            border: 1px solid #5A6EAE;
+            border-radius: 5px;
+            margin-bottom: 80px;
+            font-size: 26px;
+            padding-left: 10px;
+            text-align: center;
+          }
+
+          input[type="submit"] {
+            width: 250px;
+            height: 55px;
+            background-color: transparent;
+            color: black;
+            font-weight: bold;
+            border: 5px solid #21252B;
+            font-size: 16px;
+            cursor: pointer;
+          }
+
+          input[type="submit"]:hover {
+            transition: 0.2s;
+            color: white;
+            background-color: #21252B;
+          }
+
+          #loading { display: none; }
+
+          .loading-container {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #5A6EAE;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: center;
+            align-content: center;
+            z-index: 9999
+          }
+
+          .loading-flex {
+            min-height: 60pt;
+          }
+
+          @keyframes loading {
+            0% {
+              width: 50pt;
+              height: 50pt;
+              margin-top: 0;
+            }
+            25% {
+              height: 4pt;
+              margin-top: 23pt;
+            }
+            50% {
+              width: 4pt;
+            }
+            75% {
+              width: 50pt;
+            }
+            100% {
+              width: 50pt;
+              height: 50pt;
+              margin-top: 0;
+            }
+          }
+
+          .loader {
+            width: 50pt;
+            height: 50pt;
+            border-radius: 100%;
+            border: #DED9F3 4pt solid;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: transparent;
+            animation: loading 1s infinite;
+            margin-top: 20%;
+          }
+
+          .load-text {
+            padding-top: 15px;
+            text-align: center;
+            font: 22px;
+            color: white;
+          }
+
+          @media (max-width: 30em) {
+            .container {
+              width: 100%;
+            }
+            .inner-container {
+              position: absolute;
+              width: 300px;
+              left: 10%;
+              top: 10px;
+            }
+            input[type="text"] {
+              width: 100%;
+              height: 30px;
+            }
+
+            input[type="submit"] {
+              width: 220px;
+              height: 35px;
+              font-size: 14px;
+            }
+          }
+
+        </style>
     </head>
     <body>
-        <h1>Please enter an eventId below and click submit!</h1>
-        <form class="" action="" method="post">
-          <input type="text" name="" value="" placeholder="eventId here...">
-          <button type="submit" name="button">Retrieve CSV File</button>
-        </form>
+      <div class="container" id="co">
+        <canvas id="c"></canvas>
+        <div class="inner-container">
+          <h1>Enter an Event ID</h1>
+          <br>
+          <form action="{{ url_for('index') }}" method="post">
+            {{ form.hidden_tag() }}
+            {{ form.eventId(size=32) }}
+            <br>
+            {{ form.submit() }}
+          </form>
+        </div>
+      </div>
+      <div class="loading-container" id="loading">
+        <div class="loading-flex" style="padding-top: 20%">
+          <div class="loader">
+          </div>
+        </div>
+        <div class="load-text">
+          Please wait. This could take a minute or two... After your file
+          downloads, please close this window.
+        </div>
+      </div>
 
+
+      <script type="text/javascript" src="{{ url_for('static', filename='js/pace.js')}}"></script>
+      <script type="text/javascript">
+        var submitBtn = document.getElementsByTagName('input')[2];
+
+        if (submitBtn) {
+            submitBtn.addEventListener('click', function(e) {
+              document.getElementById('co').style.display = 'none';
+              document.getElementById('loading').style.display = 'block';
+            });
+        }
+      </script>
+      <script type="text/javascript">
+        (function() {
+          var width,
+            height,
+            largeContainer,
+            canvas,
+            ctx,
+            circles,
+            target,
+            animateHeader = true;
+
+          // Main
+          initHeader();
+          addListeners();
+
+          function initHeader() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            target = { x: 0, y: height };
+
+            largeContainer = document.getElementById("co");
+            largeContainer.style.height = height + "px";
+
+            canvas = document.getElementById("c");
+            canvas.width = width;
+            canvas.height = height;
+            ctx = canvas.getContext("2d");
+
+            // create particles
+            circles = [];
+            for (var x = 0; x < width * 0.5; x++) {
+              var c = new Circle();
+              circles.push(c);
+            }
+            animate();
+          }
+
+          // Event handling
+          function addListeners() {
+            window.addEventListener("scroll", scrollCheck);
+            window.addEventListener("resize", resize);
+          }
+
+          function scrollCheck() {
+            if (document.body.scrollTop > height) animateHeader = false;
+            else animateHeader = true;
+          }
+
+          function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            largeContainer.style.height = height + "px";
+            canvas.width = width;
+            canvas.height = height;
+          }
+
+          function animate() {
+            if (animateHeader) {
+              ctx.clearRect(0, 0, width, height);
+              for (var i in circles) {
+                circles[i].draw();
+              }
+            }
+            requestAnimationFrame(animate);
+          }
+
+          // Canvas manipulation
+          function Circle() {
+            var _this = this;
+
+            // constructor
+            (function() {
+              _this.pos = {};
+              init();
+            })();
+
+            function init() {
+              _this.pos.x = Math.random() * width;
+              _this.pos.y = height + Math.random() * 100;
+              _this.alpha = 0.1 + Math.random() * 0.3;
+              _this.scale = 0.1 + Math.random() * 0.3;
+              _this.velocity = Math.random();
+            }
+
+            this.draw = function() {
+              if (_this.alpha <= 0) {
+                init();
+              }
+              _this.pos.y -= _this.velocity;
+              _this.alpha -= 0.0005;
+              ctx.beginPath();
+              ctx.arc(
+                _this.pos.x,
+                _this.pos.y,
+                _this.scale * 10,
+                0,
+                2 * Math.PI,
+                false
+              );
+              ctx.fillStyle = "RGBA(90, 110, 174," + _this.alpha + ")";
+              ctx.fill();
+            };
+          }
+        })();
+      </script>
     </body>
 </html>
