@@ -62,27 +62,27 @@ def WriteCSVFile(eventId):
 
     # Now loop over our users and perform an API request to retrieve a user's
     #   company name since we need company_name in the CSV export
-    for uid in users:
-        # Output progress bar
-        progress_status = "User: "+str(current_user_index)+"/"+str(total_users)
-        progress(current_user_index, total_users, status=progress_status)
-
-        # Make API request for user's company name
-        reg_user_params = {"eventId": eventId, "registrantId": uid}
-        reg_user_req = cc.eventspot.events.eventId.registrants.registrantId(
-            variable=reg_user_params
-        )
-
-        # Store company name in respective user
-        company_name = reg_user_req["sections"][1]["fields"][2]["value"]
-        users[uid]["company"] = company_name
-
-        # Store the registration date in respective user
-        registration_date = reg_user_req["registration_date"]
-        users[uid]["registration_date"] = registration_date
-
-        # increment our current index for our progress bar
-        current_user_index += 1
+    # for uid in users:
+    #     # Output progress bar
+    #     progress_status = "User: "+str(current_user_index)+"/"+str(total_users)
+    #     progress(current_user_index, total_users, status=progress_status)
+    #
+    #     # Make API request for user's company name
+    #     reg_user_params = {"eventId": eventId, "registrantId": uid}
+    #     reg_user_req = cc.eventspot.events.eventId.registrants.registrantId(
+    #         variable=reg_user_params
+    #     )
+    #
+    #     # Store company name in respective user
+    #     company_name = reg_user_req["sections"][1]["fields"][2]["value"]
+    #     users[uid]["company"] = company_name
+    #
+    #     # Store the registration date in respective user
+    #     registration_date = reg_user_req["registration_date"]
+    #     users[uid]["registration_date"] = registration_date
+    #
+    #     # increment our current index for our progress bar
+    #     current_user_index += 1
 
     # Our WriteDictToCSV function requires a list of dictionary values
     dict_data = []
