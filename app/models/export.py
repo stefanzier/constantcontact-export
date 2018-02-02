@@ -29,8 +29,8 @@ def WriteDictToCSV(csv_file, csv_columns, dict_data):
 
 def WriteCSVFile(eventId):
     # ConstantContact setupçj
-    API_KEY = "hhw49s75dvjzf7fn46hxx3mp"
-    API_ACCESS_CODE = "97b44606-0a25-4641-a4ca-4eb543846b31"
+    API_KEY = "YOUR_API_KEY_HERE"
+    API_ACCESS_CODE = "YOUR_API_ACCESS_CODE_HERE"
     cc = ConstantContact(API_KEY, API_ACCESS_CODE)
 
     # Make API request and retrieve all registrants
